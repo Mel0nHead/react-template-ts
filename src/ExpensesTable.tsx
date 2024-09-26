@@ -18,14 +18,14 @@ interface Expense {
 }
 
 function formatTimestamp(timestamp: string) {
-  try {
-    return new Date(timestamp).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-    });
-  } catch (e) {
-    return timestamp;
-  }
+  return new Date(timestamp).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+}
+
+function formatAmount(amount: string) {
+  return Number(amount).toLocaleString("en");
 }
 
 function ExpensesTable() {
@@ -86,8 +86,9 @@ function ExpensesTable() {
             {expensesData.map((expense) => (
               <tr key={expense["id"]}>
                 <td>{formatTimestamp(expense["date"])}</td>
-                <th scope="row">{expense["merchant"]}</th>
-                <td>{expense["amount"]}</td>
+                <td>{expense["merchant"]}</td>
+                {/* TODO: probably a better way than to just hardcode '£' symbol */}
+                <td>£{formatAmount(expense["amount"])}</td>
                 <td className="text-capitalize">{expense["category"]}</td>
                 <td className="text-capitalize">{expense["description"]}</td>
                 <td className="text-capitalize">{expense["status"]}</td>
