@@ -17,6 +17,17 @@ interface Expense {
   status: string;
 }
 
+function formatTimestamp(timestamp: string) {
+  try {
+    return new Date(timestamp).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+  } catch (e) {
+    return timestamp;
+  }
+}
+
 function ExpensesTable() {
   const [expensesData, setExpensesData] = useState<Expense[] | null>(null);
   const [fetchStatus, setFetchStatus] = useState<FetchStatus>(FetchStatus.Idle);
@@ -74,12 +85,12 @@ function ExpensesTable() {
           <tbody>
             {expensesData.map((expense) => (
               <tr key={expense["id"]}>
-                <td>{expense["date"]}</td>
+                <td>{formatTimestamp(expense["date"])}</td>
                 <th scope="row">{expense["merchant"]}</th>
                 <td>{expense["amount"]}</td>
-                <td>{expense["category"]}</td>
-                <td>{expense["description"]}</td>
-                <td>{expense["status"]}</td>
+                <td className="text-capitalize">{expense["category"]}</td>
+                <td className="text-capitalize">{expense["description"]}</td>
+                <td className="text-capitalize">{expense["status"]}</td>
               </tr>
             ))}
           </tbody>
