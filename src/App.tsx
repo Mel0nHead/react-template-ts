@@ -1,14 +1,28 @@
+import { useEffect, useState } from "react";
+
 function App() {
-  return (
-    <div id="template-text">
-      <h1>React Starter Template - TypeScript</h1>
-      <p>
-        For JavaScript please use{" "}
-        <a href="https://github.com/ruairidhflint/react-template">this</a>{" "}
-        template
-      </p>
-    </div>
-  );
+  const [expensesData, setExpensesData] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await fetch(
+        "https://expenses-backend-mu.vercel.app/expenses",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Username: "Mark.Marks", // <--- TODO: use your name
+          },
+        }
+      );
+
+      const data = await response.json();
+      setExpensesData(data);
+    }
+
+    fetchData();
+  }, []);
+
+  return <div>{expensesData ? JSON.stringify(expensesData) : null}</div>;
 }
 
 export default App;
