@@ -29,7 +29,7 @@ function formatAmount(amount: string) {
 }
 
 function ExpensesTable() {
-  const [expensesData, setExpensesData] = useState<Expense[] | null>([]);
+  const [expensesData, setExpensesData] = useState<Expense[] | null>(null);
   const [fetchStatus, setFetchStatus] = useState<FetchStatus>(FetchStatus.Idle);
 
   useEffect(() => {
