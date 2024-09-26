@@ -29,7 +29,7 @@ function formatAmount(amount: string) {
 }
 
 function ExpensesTable() {
-  const [expensesData, setExpensesData] = useState<Expense[] | null>(null);
+  const [expensesData, setExpensesData] = useState<Expense[] | null>([]);
   const [fetchStatus, setFetchStatus] = useState<FetchStatus>(FetchStatus.Idle);
 
   useEffect(() => {
@@ -70,7 +70,7 @@ function ExpensesTable() {
 
   return (
     <div>
-      {expensesData ? (
+      {expensesData && expensesData.length > 0 ? (
         <table>
           <thead>
             <tr>
