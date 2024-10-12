@@ -1,11 +1,4 @@
-import { useEffect, useState } from "react";
-
-enum FetchStatus {
-  Idle,
-  Loading,
-  Success,
-  Error,
-}
+import { useQuery } from "@tanstack/react-query";
 
 interface Expense {
   id: string;
@@ -29,45 +22,28 @@ function formatAmount(amount: string) {
 }
 
 function ExpensesTable() {
-  const [expensesData, setExpensesData] = useState<Expense[] | null>(null);
-  const [fetchStatus, setFetchStatus] = useState<FetchStatus>(FetchStatus.Idle);
+  const { isPending, error, data } = useQuery({
+    queryKey: ["expensesData"],
+    queryFn: () =>
+      fetch(import.meta.env.VITE_API_ENDPOINT, {
+        headers: {
+          "Content-Type": "application/json",
+          Username: "Mark.Marks",
+        },
+      }).then((res) => res.json()),
+  });
 
-  useEffect(() => {
-    async function fetchData() {
-      setFetchStatus(FetchStatus.Loading);
-
-      try {
-        const response = await fetch(import.meta.env.VITE_API_ENDPOINT, {
-          headers: {
-            "Content-Type": "application/json",
-            Username: "Mark.Marks",
-          },
-        });
-
-        const data = await response.json();
-        setExpensesData(data);
-        setFetchStatus(FetchStatus.Success);
-      } catch (e) {
-        setFetchStatus(FetchStatus.Error);
-        console.log(e);
-      }
-    }
-
-    fetchData();
-  }, []);
-
-  if (fetchStatus === FetchStatus.Loading || fetchStatus === FetchStatus.Idle) {
+  if (isPending) {
     return <b>Loading...</b>;
   }
 
-  if (fetchStatus === FetchStatus.Error) {
-    return <b>An error occurred. Please refresh the page and try again.</b>;
+  if (error) {
+    return <b>An error occurred: {error.message}</b>;
   }
 
   return (
     <div>
-      {import.meta.env.VITE_API_ENDPOINT}
-      {expensesData && expensesData.length > 0 ? (
+      {data?.length ? (
         <table>
           <thead>
             <tr>
@@ -80,7 +56,7 @@ function ExpensesTable() {
             </tr>
           </thead>
           <tbody>
-            {expensesData.map((expense) => (
+            {data.map((expense: Expense) => (
               <tr key={expense["id"]}>
                 <td>{formatTimestamp(expense["date"])}</td>
                 <td>{expense["merchant"]}</td>
