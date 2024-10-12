@@ -37,16 +37,12 @@ function ExpensesTable() {
       setFetchStatus(FetchStatus.Loading);
 
       try {
-        const response = await fetch(
-          // TODO: should be an environment variable
-          "https://expenses-backend-mu.vercel.app/expenses",
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Username: "Alex.King",
-            },
-          }
-        );
+        const response = await fetch(import.meta.env.VITE_API_ENDPOINT, {
+          headers: {
+            "Content-Type": "application/json",
+            Username: "Mark.Marks",
+          },
+        });
 
         const data = await response.json();
         setExpensesData(data);
@@ -70,6 +66,7 @@ function ExpensesTable() {
 
   return (
     <div>
+      {import.meta.env.VITE_API_ENDPOINT}
       {expensesData && expensesData.length > 0 ? (
         <table>
           <thead>
